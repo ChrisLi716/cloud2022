@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelloServiceTest {
 
-    @Autowired
+    @RoutingInjected
     IHelloService helloService;
 
 }
