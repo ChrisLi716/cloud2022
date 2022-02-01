@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelloServiceTest {
 
+    private String name = "HelloServiceTest";
+
     @RoutingInjected
     IHelloService helloService;
 

@@ -1,5 +1,9 @@
 package com.chris.cloud.bean.processor.service;
 
-public interface IHelloService {
+import org.springframework.beans.factory.InitializingBean;
+
+public interface IHelloService extends InitializingBean {
     void sayHello();
+
+    void initName();
 }

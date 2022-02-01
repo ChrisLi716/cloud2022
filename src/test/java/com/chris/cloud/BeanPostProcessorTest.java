@@ -21,9 +21,9 @@ public class BeanPostProcessorTest {
     ApplicationContext applicationContext;
 
     @Test
-    public void testHelloWorldTest() {
-        helloServiceTest.getHelloService().sayHello();
+    public void testHelloService() {
         Map<String, IHelloService> beansOfType = applicationContext.getBeansOfType(IHelloService.class);
+        helloServiceTest.getHelloService().sayHello();
         if (CollUtil.isNotEmpty(beansOfType)) {
             beansOfType.forEach((k, v) -> {
                 log.info("k:{}, v:{}", k, v.getClass().getName());

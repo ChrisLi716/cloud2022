@@ -17,12 +17,18 @@ public class HelloServiceInjectProcessor implements BeanPostProcessor {
     @Autowired
     private ApplicationContext applicationContext;
 
+    /*
+    实例化、依赖注入完毕，在调用显示的初始化之前完成一些定制的初始化任务
+     */
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         log.info("begin postProcessBeforeInitialization, bean:{}, name:{}", bean.toString(), beanName);
         return bean;
     }
 
+    /*
+    实例化、依赖注入、初始化完毕时执行
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         log.info("begin postProcessAfterInitialization, bean:{}, name:{}", bean.toString(), beanName);
@@ -51,7 +57,7 @@ public class HelloServiceInjectProcessor implements BeanPostProcessor {
         field.setAccessible(true);
         if (candidates.size() == 1) {
             field.set(bean, candidates.values().iterator().next());
-        } else if (candidates.size() == 2) {
+        } else if (candidates.size() > 1) {
             String injectVal = field.getAnnotation(RoutingInjected.class).value();
             Object proxy = RoutingBeanProxyFactroy.createProxy(injectVal, type, candidates);
             field.set(bean, proxy);
