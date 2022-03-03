@@ -1,8 +1,8 @@
-package com.chris.cloud.bean.processor.config;
+package com.chris.cloud.processor.config;
 
-import com.chris.cloud.bean.processor.service.IHelloService;
-import com.chris.cloud.bean.processor.service.impl.HelloServiceImpl1;
-import com.chris.cloud.bean.processor.service.impl.HelloServiceImpl2;
+import com.chris.cloud.processor.service.IHelloService;
+import com.chris.cloud.processor.service.impl.HelloServiceImpl1;
+import com.chris.cloud.processor.service.impl.HelloServiceImpl2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

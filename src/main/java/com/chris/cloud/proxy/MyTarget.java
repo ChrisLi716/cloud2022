@@ -1,4 +1,4 @@
-package com.chris.cloud.bean.proxy;
+package com.chris.cloud.proxy;
 
 public class MyTarget {
     public boolean printName() {

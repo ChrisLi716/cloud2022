@@ -1,4 +1,4 @@
-package com.chris.cloud.bean.proxy;
+package com.chris.cloud.proxy;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

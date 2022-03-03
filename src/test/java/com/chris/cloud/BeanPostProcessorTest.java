@@ -1,8 +1,8 @@
 package com.chris.cloud;
 
 import cn.hutool.core.collection.CollUtil;
-import com.chris.cloud.bean.processor.HelloServiceTest;
-import com.chris.cloud.bean.processor.service.IHelloService;
+import com.chris.cloud.processor.HelloServiceTest;
+import com.chris.cloud.processor.service.IHelloService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

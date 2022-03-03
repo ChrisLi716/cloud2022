@@ -1,6 +1,6 @@
-package com.chris.cloud.bean.processor;
+package com.chris.cloud.processor;
 
-import com.chris.cloud.bean.processor.service.IHelloService;
+import com.chris.cloud.processor.service.IHelloService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

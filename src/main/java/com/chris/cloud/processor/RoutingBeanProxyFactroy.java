@@ -1,4 +1,4 @@
-package com.chris.cloud.bean.processor;
+package com.chris.cloud.processor;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

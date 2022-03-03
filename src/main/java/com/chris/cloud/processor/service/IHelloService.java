@@ -1,4 +1,4 @@
-package com.chris.cloud.bean.processor.service;
+package com.chris.cloud.processor.service;
 
 import org.springframework.beans.factory.InitializingBean;
 

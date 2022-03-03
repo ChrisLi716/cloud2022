@@ -1,9 +1,9 @@
 package com.chris.cloud;
 
-import com.chris.cloud.bean.processor.service.IHelloService;
-import com.chris.cloud.bean.processor.service.impl.HelloServiceImpl1;
-import com.chris.cloud.bean.proxy.AroundInteceptor;
-import com.chris.cloud.bean.proxy.MyTarget;
+import com.chris.cloud.processor.service.IHelloService;
+import com.chris.cloud.processor.service.impl.HelloServiceImpl1;
+import com.chris.cloud.proxy.AroundInteceptor;
+import com.chris.cloud.proxy.MyTarget;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactory;
 
