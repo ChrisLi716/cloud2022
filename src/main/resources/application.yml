@@ -2,3 +2,26 @@ server:
   port: 8081
   tomcat:
     uri-encoding: utf-8
+spring:
+  application:
+    name: cloud2022
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 对外暴露所有的监控指标
+      base-path: /admin # actuator暴露接口的前缀,默认为 /actuator
+  endpoint:
+    prometheus:
+      enabled: true # 激活prometheus
+    health:
+      show-details: always # 一直显示健康详细信息
+  metrics:
+    export:
+      prometheus:
+        enabled: true # 允许导出 prometheus 中的指标信息
+  server:
+    port: 8888
+
