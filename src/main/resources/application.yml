@@ -6,7 +6,6 @@ spring:
   application:
     name: cloud2022
 
-
 management:
   endpoints:
     web:
@@ -25,3 +24,7 @@ management:
   server:
     port: 8888
 
+
+animal:
+  dog:
+    enable: true

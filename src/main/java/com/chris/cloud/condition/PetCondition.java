@@ -17,10 +17,6 @@ public class PetCondition implements Condition {
 
         //获取注册的bean
         BeanDefinitionRegistry registry = context.getRegistry();
-
-        //获取环境配置
-        //context.getEnvironment();
-
         return registry.containsBeanDefinition("person") && !registry.containsBeanDefinition("cat");
     }
 }
