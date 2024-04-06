@@ -98,6 +98,9 @@ public class BeanWrapperTest {
      * ConversionService是Spring提供的接口，而PropertyEditorSupport是java自带的。
      * 输出结果：
      * Company(name=null, employee=Employee(name=张三- converter, salary=88888.88, address=[新疆, 陕西], account={work=W0001, home=H0001}))
+     * <p>
+     * 如果自定义PropertyEditorSupport与自定义Converter都进行注册后，自定义PropertyEditorSupport会生效
+     * 因为spring会先查询自定义PropertyEditorSupport，再查找自定义Converter
      */
     @Test
     public void test05() {
