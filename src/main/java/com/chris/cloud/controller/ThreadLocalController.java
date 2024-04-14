@@ -26,8 +26,18 @@ public class ThreadLocalController {
     private static final ThreadLocal<Integer> tl = new ThreadLocal<>();
     private static final TransmittableThreadLocal<Integer> ttl = new TransmittableThreadLocal<>();
     private static final TransmittableThreadLocal<Map<Integer, Integer>> ttlMap = new TransmittableThreadLocal<>();
-    private static final TransmittableThreadLocal<Map<Integer, Integer>> ttlMap2 = new TransmittableThreadLocal() {
 
+
+    /**
+     * new TransmittableThreadLocal()的时候重写initialValue(),childValue(),copy这三个方法
+     * 每次都生成一个新的值，不存在引用类型传递
+     * 解决了:内存泄漏，并以问题
+     */
+    private static final TransmittableThreadLocal<Map<Integer, Integer>> ttlMap2 = new TransmittableThreadLocal() {
+        /**
+         * 可以覆盖这个初始化方法，就不用自己在外面写初始化方法<code>init()</code>
+         * @return Object
+         */
         @Override
         protected Object initialValue() {
             return MapUtil.newHashMap(true);
@@ -43,6 +53,7 @@ public class ThreadLocalController {
 
         /**
          * 重写copy方法，replay时给子线程设置变量的value不再是父线程的map
+         * 这样父线程的操作就不会影响到子线程
          */
         @Override
         public Object copy(Object parentValue) {
@@ -56,10 +67,6 @@ public class ThreadLocalController {
 
     private Integer m = 0;
 
-    static {
-        init();
-    }
-
     @GetMapping("/tl")
     public boolean getThreadLocal() {
         tl.set(i.incrementAndGet());
@@ -69,6 +76,33 @@ public class ThreadLocalController {
         return true;
     }
 
+    /**
+     * 调用后发现子线程并没有将i传入
+     * 解决办法：
+     * 提交子线程时需要实现<code>TtlRunnable</code>, 见getTtl1方法
+     */
+    @GetMapping("ttl/test0")
+    public void getTtl() {
+        ttl.set(i.incrementAndGet());
+        log.info("main thread set:{}", i.get());
+        executor.execute(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(3);
+                log.info("child thread get:{}", ttl.get());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ttl.remove();
+        log.info("main thread end");
+    }
+
+    /**
+     * 使用<code>TtlRunnable</code>提交子线程后，子线程可以获取到父线程的变量
+     * 原因：
+     * <code>TtlRunnable</code>实现了<code>Runnable</code>接口，在run方法中调用了父线程的<code>TtlRunnable</code>的run方法
+     * 但是这种使用方式是有坑的
+     */
     @GetMapping("/ttl/test1")
     public void getTtl1() {
         log.info("begin main thread");
@@ -76,7 +110,7 @@ public class ThreadLocalController {
         executor.execute(TtlRunnable.get(() -> {
             try {
                 TimeUnit.SECONDS.sleep(3);
-                log.info("sub thread get the value:{}", ttl.get());
+                log.info("child thread get the value:{}", ttl.get());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -85,20 +119,28 @@ public class ThreadLocalController {
         log.info("end main thread");
     }
 
+
+    static {
+        init();
+    }
+
     /**
+     * 第一次调用
      * begin main thread:{}
      * main thread put:1
      * after main thread remove, get value:null
      * end main thread
      * sub thread get the value:{1=1}
+     * <p>
+     * 第二次调用
      * begin main thread:{1=1}
      * main thread put:2
      * after main thread remove, get value:null
      * end main thread
      * sub thread get the value:{1=1, 2=2}
      * <p>
-     * 在静态代码块里面调用init方法，main线程加载的类， ttlMap属于主线程
-     * 当请求到来呢，main线程开了子线程，子线程复制了main线程并引用了main线程的引用的map
+     * 在静态代码块<code>static {}</code>里面调用init方法，main线程加载的类， ttlMap属于主线程
+     * 当请求到来呢，main线程开了子线程，子线程复制了main线程的threadLocalGroup，并引用了main线程的引用的map
      * ttlMap.remove()只是把当前子线程从ThreadLocal中移除掉，使用的map还是主线程的map, 即map共享了。
      */
     @GetMapping("/ttl/test2")
@@ -108,6 +150,7 @@ public class ThreadLocalController {
             init();
         }
         log.info("begin main thread:{}", ttlMap.get());
+
         ttlMap.get().put(++m, m);
         log.info("main thread put:{}", m);
 
@@ -134,7 +177,9 @@ public class ThreadLocalController {
      * end main thread
      * sub thread get the value:{1=1, 2=2}
      * <p>
-     * 子线程持有的map都是同一个
+     * 提交任务后再设置ttlMap2， 子线程也能获取到新增设置的值， 除非你有这种业务场景需要子线程中感知到主线程最新设置的值，否则这种使用就是有问题的
+     * 原因：
+     * 因为子线程的map引用的还是主线程的map，所以子线程也能获取到主线程设置的值
      */
     @GetMapping("/ttl/test3")
     public void getTtl3() {
